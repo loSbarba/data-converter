@@ -1,13 +1,17 @@
 package com.converter.data.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,34 +19,35 @@ import com.converter.data.dto.ExampleDataDTO;
 import com.converter.data.service.DataConverterService;
 import com.converter.data.utils.ExcelGenerator;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletResponse;
-
 @RestController
 public class DataConverterController {
-	
-	@Autowired
-	DataConverterService dataConverterService;
+    
+    @Autowired
+    DataConverterService dataConverterService;
 
-	@Operation(operationId = "test", summary = "test")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", content = {
-			@Content(mediaType = "application/json") }) })
-	@GetMapping(value = "/test", consumes = "application/json")
-	public void getExcell(HttpServletResponse response, @RequestBody List<ExampleDataDTO> datas) throws IOException {
-		response.setContentType("application/octet-stream");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+    @PostMapping(value = "/test", consumes = "application/json")
+    public ResponseEntity<byte[]> generateExcel(@RequestBody List<ExampleDataDTO> datas) throws IOException {
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String filename = "records_" + currentDateTime + ".xlsx";
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=records_" + currentDateTime + ".xlsx";
-		response.setHeader(headerKey, headerValue);
+        ExcelGenerator generator = new ExcelGenerator(datas);
 
-		ExcelGenerator generator = new ExcelGenerator(datas);
+        // Ottieni l'InputStream dal generatore
+        InputStream inputStream = generator.generateAsInputStream();
 
-		generator.generate(response);
-	}
-	
+        // Leggi l'InputStream in un array di byte
+        byte[] excelBytes = org.apache.commons.io.IOUtils.toByteArray(inputStream);
+
+        // Imposta gli header per la risposta HTTP
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData(filename, filename);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        // Restituisci il file Excel come ResponseEntity
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelBytes);
+    }
 }
