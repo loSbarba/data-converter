@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+    postgres:
+        container_name: postgres-excel
+        image: postgres
+        environment:
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=postgres
+          - POSTGRES_DB=generator
+        ports:
+          - '5432:5432'

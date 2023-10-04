@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.converter.data.dto.ExampleDataDTO;
+import com.converter.data.entity.Ordine;
 import com.converter.data.service.DataConverterService;
 import com.converter.data.utils.ExcelGenerator;
 
@@ -49,5 +51,10 @@ public class DataConverterController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(excelBytes);
+    }
+    
+    @GetMapping("/testAll")
+    public List<Ordine> findAllTest(){
+    	return dataConverterService.findAll();
     }
 }
