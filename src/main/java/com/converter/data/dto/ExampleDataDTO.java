@@ -6,9 +6,11 @@ import com.converter.data.model.MisuraStampa;
 import com.converter.data.model.TagliaAbbigliamento;
 import com.converter.data.model.TipoAbbigliamento;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ExampleDataDTO {
 	String nomeCliente;
 	String cognomeCliente;
@@ -16,5 +18,5 @@ public class ExampleDataDTO {
 	TipoAbbigliamento tipoAbbigliamento;
 	TagliaAbbigliamento tagliaAbbigliamento;
 	List<MisuraStampa> misuraStampa;
-	Integer quantita;
+	Long quantita;
 }

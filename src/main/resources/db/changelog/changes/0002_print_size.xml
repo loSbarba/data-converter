@@ -4,19 +4,22 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 	<changeSet id="1-1" author="SAMUELE">
-		<createTable tableName="test">
+		<createTable tableName="print_size">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" primaryKeyName="test_pk" />
+				<constraints primaryKey="true" nullable="false" primaryKeyName="print_size_pk" />
 			</column>
-			<column name="name" type="varchar(255)">
+			<column name="size" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="title" type="varchar(255)">
+			<column name="order_id" type="bigint">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
 	</changeSet>
 	<changeSet author="SAMUELE" id="1-2">
-		<createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="test_id_seq" startValue="1" />
+		<createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="print_size_id_seq" startValue="1" />
+	</changeSet>
+	<changeSet author="SAMUELE" id="1-3">
+		<addForeignKeyConstraint baseTableName="print_size" baseColumnNames="order_id" constraintName="print_size_fk" referencedTableName="ordine" referencedColumnNames="id" />
 	</changeSet>
 </databaseChangeLog>

@@ -98,7 +98,7 @@ public class ExcelGenerator {
         return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     }
 
-    private String convertListToString(List<MisuraStampa> stampe) {
+    public String convertListToString(List<MisuraStampa> stampe) {
         String str = "";
         for (MisuraStampa stampa : stampe) {
             if (stampa.equals(MisuraStampa.GRANDE)) {

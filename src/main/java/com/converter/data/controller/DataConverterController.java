@@ -1,7 +1,6 @@
 package com.converter.data.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,14 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.converter.data.dto.ExampleDataDTO;
 import com.converter.data.entity.Ordine;
+import com.converter.data.entity.PrintSize;
+import com.converter.data.repository.PrintSizeRepository;
 import com.converter.data.service.DataConverterService;
-import com.converter.data.utils.ExcelGenerator;
 
 @RestController
 public class DataConverterController {
     
     @Autowired
     DataConverterService dataConverterService;
+    
+    @Autowired
+    PrintSizeRepository printSizeRepository;
 
     @PostMapping(value = "/test", consumes = "application/json")
     public ResponseEntity<byte[]> generateExcel(@RequestBody List<ExampleDataDTO> datas) throws IOException {
@@ -33,13 +36,8 @@ public class DataConverterController {
         String currentDateTime = dateFormatter.format(new Date());
         String filename = "records_" + currentDateTime + ".xlsx";
 
-        ExcelGenerator generator = new ExcelGenerator(datas);
-
-        // Ottieni l'InputStream dal generatore
-        InputStream inputStream = generator.generateAsInputStream();
-
         // Leggi l'InputStream in un array di byte
-        byte[] excelBytes = org.apache.commons.io.IOUtils.toByteArray(inputStream);
+        byte[] excelBytes = dataConverterService.generateExcel(datas);
 
         // Imposta gli header per la risposta HTTP
         HttpHeaders headers = new HttpHeaders();
@@ -57,4 +55,22 @@ public class DataConverterController {
     public List<Ordine> findAllTest(){
     	return dataConverterService.findAll();
     }
+    
+    
+    @PostMapping(value = "/createOrder", consumes = "application/json")
+    public ResponseEntity<List<Ordine>> createOrder(@RequestBody List<ExampleDataDTO> datas) throws IOException {
+    	
+    	List<Ordine> result =  dataConverterService.insertOrders(datas);
+    	
+    	 return ResponseEntity.ok()
+                 .body(result);
+    }
+    
+    
+    @GetMapping(value = "/test")
+    public List<PrintSize> GetPrintSize() {
+		return printSizeRepository.findAll();
+	}
+    
+    
 }
