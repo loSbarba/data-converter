@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.converter.data.model.MisuraStampa;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +27,6 @@ public class PrintSize {
 	@Basic(optional = false)
 	@Column(name = "id", unique = true, nullable = false)
 	Long id;
-	String size;
+	MisuraStampa size;
 	Long order_id;
 }

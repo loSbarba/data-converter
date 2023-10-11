@@ -7,9 +7,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.converter.data.dto.ExampleDataDTO;
 import com.converter.data.model.MisuraStampa;
 import com.converter.data.model.TipoAbbigliamento;
+import com.converter.data.repository.PrintSizeRepository;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,6 +25,9 @@ public class ExcelGenerator {
     private List<ExampleDataDTO> listRecords;
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
+    
+    @Autowired
+    protected PrintSizeRepository printSizeRepository;
 
     public ExcelGenerator(List<ExampleDataDTO> listRecords) {
         this.listRecords = listRecords;
